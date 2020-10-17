@@ -2,8 +2,8 @@ package items.properties;
 
 import items.Album;
 import items.Game;
+import people.Customer;
 import tools.Input;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -100,35 +100,35 @@ public class Rental {
         }
     }
 
-    public Rental returnGame(int numberCredits, String membershipType, String customerId, ArrayList<Game> games) {
-        String rentId = input.getInput(input.EOL + "Enter the ID of the game would you like to return: ");
+   public Rental returnGame(Customer customer, Game rentedGame) {
         long daysRented = 0;
-        double userBill;
+        double userBill = 0;
         boolean contains = false;
-        for (Game rentedGame : games) {
-            if (rentedGame.getId().equals(rentId)) {
                 daysRented = DAYS.between(rentedGame.getRentedDate(), LocalDate.now());
-                if (daysRented < 0) {
+                if (daysRented > 0) {
                     contains = true;
-                    if (rentedGame.getRentStatus()) {
-                        rentedGame.setRentStatus(false);
-                        switch (membershipType) {
+                    rentedGame.setRentStatus(false);
+                        if (customer.getCredits() == 5) {
+                            userBill = 0;
+                        } else userBill = customer.memberDiscount(daysRented * rentedGame.getDailyRent());
+
+           /*             switch (membershipType) {
                             case "Silver":
-                                userBill = (daysRented * rentedGame.getDailyRent()) * SILVER_DISCOUNT;
+                                userBill = discount(daysRented * rentedGame.getDailyRent());
                                 break;
                             case "Gold":
-                                userBill = (daysRented * rentedGame.getDailyRent()) * GOLD_DISCOUNT;
+                                userBill = discount(daysRented * rentedGame.getDailyRent());
                                 break;
                             case "Platinum":
-                                userBill = (daysRented * rentedGame.getDailyRent()) * PLATINUM_DISCOUNT;
+                                userBill = discount(daysRented * rentedGame.getDailyRent());
                                 break;
                             default:
                                 userBill = daysRented * rentedGame.getDailyRent();
                                 break;
-                        }
-                        if (numberCredits == 5) {
-                            userBill = 0;
-                        }
+                     }
+
+            */
+
                         rentalIncome = rentalIncome + userBill;
                         System.out.println(input.EOL + "You rented " + rentedGame.getTitle() + " for " + daysRented + " days. " + input.EOL + "Your total is " + Math.round(userBill * 100.0) / 100.0 + " kr" + input.EOL);
                         System.out.println("The Game has now been returned.");
@@ -140,7 +140,7 @@ public class Rental {
                         String ratingQuestion = input.getInput("We hope you enjoyed playing this " + rentedGame.getTitle() + " Would you like to rate it? Y/N ");
 
                         if (ratingQuestion.equalsIgnoreCase("n")) {
-                            rentTransaction = new Rental(customerId, rentId, userBill);
+                            rentTransaction = new Rental(getCustomerId(), rentedGame.getId(), userBill);
                             return rentTransaction;
                         } else if (ratingQuestion.equalsIgnoreCase("y")) {
                             rating = input.getInt("How would you rate it on a scale of 0-5? ");
@@ -159,24 +159,14 @@ public class Rental {
                                 System.out.println("Thank you for your feedback!");
                                 customerRating = new Rating(rating);
                             }
-                            rentTransaction = new Rental(customerId, rentId, userBill, customerRating);
+                            rentTransaction = new Rental(customerId, rentedGame.getId(), userBill, customerRating);
                         }
                         rentedGame.getRatingSet().add(customerRating);
                         return rentTransaction;
-                    } else if (!rentedGame.getRentStatus()) {
-                        System.out.println("This game hasn't even been rented what are you doing? Please try again.");
-                        returnGame(numberCredits, membershipType, customerId, games);
-                    }
                 } else {
                     System.out.println("Invalid operation. Upon returning an item, the number of days rented must be positive." + input.EOL);
                 }
-            }
-            }
-        if (!contains && daysRented > 0) {
-            System.out.println("Game with this ID doesn't exist in this here dimension. We don't stock items from different dimensions yet... ");
-            returnGame(numberCredits, membershipType, customerId, games);
-        }
-        return null;
+       return null;
     }
 
     public void rentAlbum(ArrayList<Album> albums) {
@@ -205,7 +195,7 @@ public class Rental {
         for (Album album : albums) {
             if (album.getID().equals(rental)) {
                 double daysRented = DAYS.between(album.getRentedDate(), LocalDate.of(2020, 10, 31));
-                if (daysRented < 1) {
+                if (daysRented > 1) {
                     if (album.getRentStatus().equals("\033[31mRented\033[0m")) {
                         album.setRentStatus(false);
                         album.setRentedDate(null);

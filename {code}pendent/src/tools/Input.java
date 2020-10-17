@@ -3,6 +3,7 @@ package tools;
 import java.io.IOException;
 import java.time.Year;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Input {
     public static final String EOL = System.lineSeparator();
@@ -41,29 +42,53 @@ public class Input {
     }
 
     public String getInput(String message) {
-        System.out.print(message);
-     /*   while (!input.hasNext("[A-Za-z]+")) {
-            System.out.print( EOL + "Sorry, we only accept alphabetical input so we can make sure you're really human!" + EOL + "Try again: " );
-            input.nextLine();
+        String userInput = "";
+        boolean complianceCheck = false;
+        while (!complianceCheck) {
+            try {
+                System.out.print(message);
+                userInput = input.nextLine();
+                complianceCheck = true;
+            } catch (InputMismatchException e) {
+                System.out.println("That's not really convention for this type of a question is it?");
+                input.nextLine();
+            }
         }
-
-      */
-        String userInput = input.nextLine();
         return userInput;
     }
 
     public int getInt(String message){
-        System.out.print(message);
-        int userInput = input.nextInt();
-        input.nextLine();
-        //System.out.println("That's not really in compliance with the type of values generally accepted here eh?");
-        return userInput;
+
+        int userInput = 0;
+        boolean complianceCheck = false;
+        while (!complianceCheck) {
+            try {
+                System.out.print(message);
+                userInput = input.nextInt();
+                input.nextLine();
+                complianceCheck = true;
+            } catch (InputMismatchException e){
+                System.out.println("That's not really in compliance with the type of values generally accepted here eh?");
+                input.nextLine();
+            }
+        }
+            return userInput;
     }
 
     public double getDouble(String message) {
-        System.out.print(message);
-        double userInput = input.nextDouble();
-        System.lineSeparator();
+        double userInput = 0.0;
+        boolean complianceCheck = false;
+        while (!complianceCheck) {
+            try {
+                System.out.print(message);
+                userInput = input.nextDouble();
+                input.nextLine();
+                complianceCheck = true;
+            } catch (InputMismatchException e) {
+                System.out.println("That's not really in compliance with the type of values generally accepted here eh?");
+                input.nextLine();
+            }
+        }
         return userInput;
     }
 
@@ -74,9 +99,9 @@ public class Input {
         // Print a char from the array, then sleep for millis
         for (int i = 0; i < chars.length; i++) {
                try {
-                   Thread.sleep(10);
+                   TimeUnit.MILLISECONDS.sleep(30);
                    System.out.print(chars[i]);
-                   Thread.sleep(10);
+                   TimeUnit.MILLISECONDS.sleep(30);
                } catch (InterruptedException e) {
                    // shouldn't happen but if it does you'll know it happened.
                    e.printStackTrace(); //shows you a similar error to compiler errors
@@ -87,11 +112,7 @@ public class Input {
     public void userCheck() {
         String check = ">> Press \u001B[31m'Enter'\u001B[0m to continue: " + EOL; // Get rid of this. This won't even help us with the VG...
         System.out.print(check);
-        try {
-            int read = System.in.read(new byte[2]); // TODO need to understand this
-        } catch (IOException e) {
-            e.printStackTrace(); //shows you a similar error to compiler errors
-        }
+        input.nextLine();
 
     }
 }

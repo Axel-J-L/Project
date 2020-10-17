@@ -14,7 +14,6 @@ public class Person {
     }
 
     Person(String name) throws InputMismatchException {
-
         this.id = UUID.randomUUID().toString();
         this.name = name;
     }

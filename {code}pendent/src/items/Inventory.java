@@ -38,7 +38,12 @@ public class Inventory {
         this.rentalFrequency = 0;
         this.ratings = new ArrayList<Rating>();
     }
-
+    public Inventory(String title, double dailyRent, int year, LocalDate date) {
+        this.title=title;
+        this.dailyRent=dailyRent;
+        this.year=year;
+        this.rentedDate=date;
+    }
     public Inventory(){
     }
 
@@ -46,6 +51,8 @@ public class Inventory {
         this.title = title;
         this.rentalFrequency = rentalTimes;
     }
+
+
 
     public String getId() {
         return id;

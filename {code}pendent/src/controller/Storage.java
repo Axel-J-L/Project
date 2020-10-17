@@ -172,14 +172,39 @@ public class Storage {
             if (customer.getName().equalsIgnoreCase(name)) {
                 contains = true;
                 viewGames();
-                Rental newTransaction = rental.returnGame(customer.getCredits(), customer.getMembership().membershipType(), customer.getId(), getGames());
-                getRentalHistory().add(newTransaction);
+                String rentId = input.getInput(input.EOL + "Enter the ID of the game would you like to return: ");
+                Game gameToReturn = retrieveGame(rentId);
+                if (gameToReturn != null){
+                    if (gameToReturn.getRentStatus()) {
+                        Rental newTransaction = rental.returnGame(customer, gameToReturn);
+                        getRentalHistory().add(newTransaction);
+                    } else {
+                        System.out.println("This game hasn't been rented. Try again.");
+                        returnGame();
+                    }
+                } else {
+                    System.out.println("Game with this ID doesn't exist in this dimension. Try again.");
+                    returnGame();
+                }
             }
         }
         if (!contains) {
-            System.out.println("That customer doesn't exist on our database (maybe not at all!?), please try again.");
+            System.out.println("That customer doesn't exist on our database, please try again.");
             returnGame();
         }
+    }
+
+    private Game retrieveGame(String rentId) {
+        Game registeredGame = null;
+        Iterator<Game> searching = games.iterator();
+        while(searching.hasNext() && registeredGame == null){
+            Game currentGame = searching.next();
+            if(currentGame.getId().equals(rentId)){
+                registeredGame = currentGame;
+                return registeredGame;
+            }
+        }
+        return null;
     }
 
     public void viewTransactions() {
@@ -382,10 +407,15 @@ public class Storage {
 
     public void searchAlbums() {
         int google = input.getInt("Album Search" + input.EOL + "Year: ");
+        boolean yearExists = false;
         for (Album album : albums) {
             if (album.getYear() == google) {
+                yearExists = true;
                 System.out.println(album.toString());
             }
+        }
+        if (yearExists = false){
+            System.out.println("There is no album available for this year.");
         }
     }
 
@@ -400,21 +430,12 @@ public class Storage {
     public void addGame() {
         int countArray = games.size();
         String newGameTitle = input.getInput("Title:  ");
-        while(newGameTitle.length() < 1){
-            newGameTitle = input.getInput("We like our games to have names!" + input.EOL + "Title:  ");
-        }
         String newGameGenre = input.getInput("Genre:  ");
         int newGameYear = input.getInt("Year:  ");
-        while(newGameYear < 1950 || newGameYear > LocalDate.now().getYear()){
-            newGameYear = input.getInt("Nah, that can't be right... Try again. "+ input.EOL+ "Year: ");
-        }
         double newGameRentCost = input.getDouble("Daily Rent Fee:  ");
-        while(newGameRentCost < 0){
-            newGameRentCost = input.getDouble("Whoa..... we are not that cheap! "+ input.EOL+ "Daily rent Fee: ");
-        }
         input.input.nextLine();
 
-        games.add(new Game(newGameTitle, newGameGenre, newGameRentCost, newGameYear));
+        games.add(new Game(newGameTitle, newGameGenre, newGameRentCost, newGameYear ));
         System.out.println("Game Added Successfully : " + games.get(games.size()-1).toString());
     }
 
