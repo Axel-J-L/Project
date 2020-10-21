@@ -1,7 +1,0 @@
-Rental history
-
-1. DONE - Customer that has spent the most money.
-2. Do some user niceness (colors, check the print statements, and \n REPLACE WITH input.EOL)
-3. DONE Something wonky with trying to add a membership if you could check that out
-4. DONE Album frequency works but games does not (double check might work)
-5. Error handle for remove message

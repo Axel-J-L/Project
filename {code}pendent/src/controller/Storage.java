@@ -1,59 +1,84 @@
 package controller;
 
+import exceptions.InvalidInputException;
 import items.*;
 import items.properties.*;
 import people.*;
 import people.features.*;
 import people.features.membership.*;
 import tools.Input;
-
+import java.io.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Storage {
 
-    private Employee employee = new Employee();
-    private Customer customer = new Customer();
-    private Album album = new Album();
-    private Rental rental = new Rental();
-    private Game game = new Game();
-    private Rating rating = new Rating();
-    private Message message = new Message();
-    private Input input = Input.getInstance();
+    private final Employee employee = new Employee();
+    private final Customer customer = new Customer();
+    private final Album album = new Album();
+    private final Rental rental = new Rental();
+    private final Game game = new Game();
+    private final Rating rating = new Rating();
+    private final Message message = new Message();
+    private final Input input = Input.getInstance();
+
+    public Storage() throws InvalidInputException {
+    }
 
     // "kind of" Storage
 
-    private ArrayList<Album> albums = new ArrayList<>(Arrays.asList(
-            new Album("London Calling", "The Clash", 1980, 14.99, false, null),
-            new Album("Legend", "Bob Marley & The Wailers", 1984, 17.99, true, LocalDate.of(2020, 8, 23)),
-            new Album("The Dark Side of the Moon", "Pink Floyd", 1973, 24.99, false, null),
-            new Album("The Black Album", "Metallica", 1991, 19.99, true, LocalDate.of(2020, 8, 23)),
-            new Album("Blood Sugar Sex Magik", "Red Hot Chili Peppers", 1991, 18.99, false, null)));
+    public void readFile(){
+        BufferedReader br;
+        String line;
+        try {
+            br = new BufferedReader(new FileReader("{code}pendent/src/db.txt"));
+            while((line = br.readLine()) != null) {
+                String[] token = line.split(";");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                switch (token[0].toLowerCase()){
+                    case "employee":
+                        employees.add(new Employee(token [1], token[2],Integer.parseInt(token[3]),token[4], Double.parseDouble(token[5])));
+                        break;
+                    case "customer":
+                        customerList.add(new Customer(token [1], token[2]));
+                        break;
+                    case "game":
+                        inventory.add(new Game(token [1], token[2], Double.parseDouble(token[3]), Integer.parseInt(token[4]), Boolean.parseBoolean(token[5]), LocalDate.of(Integer.parseInt(token[6]), Integer.parseInt(token[7]), Integer.parseInt(token[8]))));
+                        break;
+                    case "album":
+                        inventory.add(new Album(token[1], token[2], Integer.parseInt(token[3]), Double.parseDouble(token[4]), Boolean.parseBoolean(token[5]), LocalDate.of(Integer.parseInt(token[6]), Integer.parseInt(token[7]), Integer.parseInt(token[8]))));
+                        break;
+                    default:
+                        System.out.println("broken dont get here...");
+                        break;
 
-    private ArrayList<Employee> employees = new ArrayList<>(Arrays.asList(
-            new Employee("Bob", 1974, "1044 Randolph Street", 13457),
-            new Employee("Jill", 1985, "3845 Rainbow Street", 14568),
-            new Employee("Jack", 1934, "1453 Tilden Street", 16893),
-            new Employee("Anna", 1959, "1854 Rose Avenue", 13578),
-            new Employee("Sam", 1993, "1784 Sunrise Blvd", 12385),
-            new Employee("Emanuel", 1992, "1039 Surfer's Paradise Lane", 12547)));
+                }
+            }
+            br.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+       } catch (InvalidInputException e) {
+           e.printStackTrace();
+        }
+    }
 
-    private ArrayList<Game> games = new ArrayList<>(Arrays.asList(
-            new Game("Sonic: The Hedgehog", "Explore", 18.99, 1857, false, null),
-            new Game("Crash Bandicoot", "Racing", 17.59, 1957, false, null),
-            new Game("The Legend of Zelda", "Explore", 12.29, 1874, true, LocalDate.of(2020, 8, 20)),
-            new Game("Prince of Persia", "Impossible", 15.39, 1984, false, null),
-            new Game("Super Mario", "Classic", 18.99, 1999, false, null),
-            new Game("Street Fighter", "Fighting", 11.99, 1991, true, LocalDate.of(2020, 8, 20)),
-            new Game("Tekken", "Fighting", 17.99, 1932, false, null)));
+    public static BufferedWriter bw;
 
-    private ArrayList<Customer> customerList = new ArrayList<>(Arrays.asList(
-            new Customer("Vernita", new Silver()),
-            new Customer("Navya", new Gold()),
-            new Customer("Drake", new Platinum()),
-            new Customer("Altan"),
-            new Customer("Karen"),
-            new Customer("Axel", new Silver())));
+    static {
+        try {
+            bw = new BufferedWriter(new FileWriter("db.txt"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private ArrayList<Album> albums = new ArrayList<>();
+    private ArrayList<Employee> employees = new ArrayList<>();
+    private ArrayList<Customer> customerList = new ArrayList<>();
+    private List<Inventory> inventory = new ArrayList<>();
+
 
     private ArrayList<Rental> rentalHistory = new ArrayList<>(Arrays.asList(
             new Rental("bob", "test1", 1756.34),
@@ -66,6 +91,10 @@ public class Storage {
         return rentalHistory;
     }
     private HashMap<String, Membership> membershipRequests = new HashMap<>(); // not being used yet
+
+    public List<Inventory> getInventory() {
+        return inventory;
+    }
 
     public void itemsByProfit() {
         rentalHistory.sort(Comparator.comparingDouble(Rental::getRentExpense));
@@ -82,7 +111,11 @@ public class Storage {
                     rentalExpense =+ rental.getRentalIncome();
                 }
             }
-            customerExpenditure.add(new Customer(customer.getName(), rentalExpense));
+            try {
+                customerExpenditure.add(new Customer("", customer.getName(), rentalExpense));
+            } catch (InvalidInputException e){
+                e.getMessage();
+            }
         }
         customerExpenditure.sort(Comparator.comparingDouble(Customer::getSpentMoney));
         Collections.reverse(customerExpenditure);
@@ -91,26 +124,15 @@ public class Storage {
 
     public void rentalFrequency() {
         ArrayList<Inventory> rentalFrequency = new ArrayList<>();
-        for (Game game : games){
-            int rentalTimes = 0;
-            for (Rental rental : rentalHistory){
-                if (game.getId().equals(rental.getItemId())){
-                    rentalTimes =+ 1;
-                }
-            }
-           if (rentalTimes != 0) {
-               rentalFrequency.add(new Inventory(game.getTitle(), rentalTimes));
-           }
-        }
-        for (Album album : albums) {
+        for (Inventory item : inventory){
             int rentalTimes = 0;
             for (Rental rental : rentalHistory) {
-                if (album.getId().equals(rental.getItemId())) {
+                if (item.getId().equals(rental.getItemId())) {
                     rentalTimes = +1;
                 }
             }
             if (rentalTimes != 0){
-                rentalFrequency.add(new Inventory(album.getTitle(), rentalTimes));
+                rentalFrequency.add(new Inventory(item.getTitle(), rentalTimes));
         }
         }
         for (Inventory rentalItem : rentalFrequency)
@@ -125,58 +147,40 @@ public class Storage {
         return customerList;
     }
 
-    public ArrayList<Game> getGames() {
-        return games;
-    }
-
     public ArrayList<Album> getAlbums() {
         return albums;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer() {
-        this.customer = customer;
-    }
-
-    public Rental getRental() {
-        return rental;
-    }
-
-    public void setRental(Rental rental) {
-        this.rental = rental;
-    }
-
     public void rentGame() {
-        String maxRentals = "You currently have too many rentals for your membership! That's awesome that you enjoy our products so much!";
-        String user = input.getInput(input.EOL + "Customer Name: ");
-        for (Customer customer : customerList) {
-            if (user.equalsIgnoreCase(getCustomer().getName())) {
-                if (customer.getMembership().maxRentals(customer.getCurrentRentals())) {
-                        rental.rentGame(getGames());
-                        customer.incrementRentals();
-                    } else {
-                        System.out.println(maxRentals);
-                    }
+        String maxRentals = "You have reached your current limit on rentals. That's awesome that you enjoy our products so much!";
+        String name = input.getInput(input.EOL + "Customer Name: ");
+        Customer user = retrieveCustomer(name);
+        if (user != null) {
+            if (user.canRent()) {
+                viewGames();
+                String rentId = input.getInput("Hi " + user.getName() + ". Which game would you like to rent?" + input.EOL + "ID: ");
+                Inventory gameToRent = retrieveItem(rentId);
+                if (gameToRent != null) {
+                    rental.rentItem(gameToRent);
+                    user.incrementRentals();
                 }
+                } else {
+                    System.out.println(maxRentals);
             }
-            rental.rentGame(getGames());
         }
+    }
 
     public void returnGame() {
-        String name = input.getInput("Hiya! What is your name, customer? ");
-        boolean contains = false;
-        for (Customer customer : customerList) {
-            if (customer.getName().equalsIgnoreCase(name)) {
-                contains = true;
+        String name = input.getInput("Hiya! What is your name?  ");
+        Customer customer = retrieveCustomer(name);
+            if (customer != null) {
                 viewGames();
                 String rentId = input.getInput(input.EOL + "Enter the ID of the game would you like to return: ");
-                Game gameToReturn = retrieveGame(rentId);
+                Inventory gameToReturn = retrieveItem(rentId);
                 if (gameToReturn != null){
-                    if (gameToReturn.getRentStatus()) {
-                        Rental newTransaction = rental.returnGame(customer, gameToReturn);
+                    if (gameToReturn.isRentStatus()) {
+                        double userBill =  rental.returnGame(customer, gameToReturn);
+                        Rental newTransaction = addToRentHistory(customer.getId(), gameToReturn, userBill);
                         getRentalHistory().add(newTransaction);
                     } else {
                         System.out.println("This game hasn't been rented. Try again.");
@@ -187,23 +191,66 @@ public class Storage {
                     returnGame();
                 }
             }
-        }
-        if (!contains) {
-            System.out.println("That customer doesn't exist on our database, please try again.");
-            returnGame();
-        }
     }
 
-    private Game retrieveGame(String rentId) {
-        Game registeredGame = null;
-        Iterator<Game> searching = games.iterator();
-        while(searching.hasNext() && registeredGame == null){
-            Game currentGame = searching.next();
-            if(currentGame.getId().equals(rentId)){
-                registeredGame = currentGame;
-                return registeredGame;
+    private Rental addToRentHistory(String customerId, Inventory rentedItem, double userBill){
+        String feedback = null;
+        int rating = 0;
+        Rating customerRating = null;
+        Rental rentTransaction = null;
+        String ratingQuestion = input.getInput("We hope you enjoyed playing this " + rentedItem.getTitle() + " Would you like to rate it? Y/N ");
+
+        if (ratingQuestion.equalsIgnoreCase("n")) {
+            rentTransaction = new Rental(customerId, rentedItem.getId(), userBill);
+            return rentTransaction;
+        } else if (ratingQuestion.equalsIgnoreCase("y")) {
+            rating = input.getInt("How would you rate it on a scale of 0-5? ");
+            if (rating > 5) {
+                rating = 5;
+            }
+            if (rating < 0) {
+                rating = 0;
+            }
+            String feedbackQuestion = input.getInput("Would you like to leave a review? Y/N ");
+            if (feedbackQuestion.equalsIgnoreCase("y")) {
+                feedback = input.getInput("How did you experience the " + rentedItem.getTitle() + "?  Do you have any advice for other players? or did you kind of just suck at it...");
+                System.out.println("Thank you for your feedback!");
+                customerRating = new Rating(rating, feedback);
+            } else {
+                System.out.println("Thank you for your feedback!");
+                customerRating = new Rating(rating);
+            }
+            rentTransaction = new Rental(customerId, rentedItem.getId(), userBill, customerRating);
+        }
+        rentedItem.getRatingSet().add(customerRating);
+        return rentTransaction;
+    }
+
+    private Inventory retrieveItem(String rentId) {
+        Inventory searchedItem = null;
+        Iterator<Inventory> searching = inventory.iterator();
+        while(searching.hasNext() && searchedItem == null){
+            Inventory current = searching.next();
+            if(current.getId().equals(rentId)){
+                searchedItem = current;
+                return searchedItem;
             }
         }
+        System.out.println("That item doesn't exist on our database.");
+        return null;
+    }
+
+    private Customer retrieveCustomer(String name) {
+        Customer user = null;
+        Iterator<Customer> searching = customerList.iterator();
+        while(searching.hasNext() && user == null){
+            Customer currentCustomer = searching.next();
+            if(currentCustomer.getName().equalsIgnoreCase(name)){
+                user = currentCustomer;
+                return user;
+            }
+        }
+        System.out.println("That customer doesn't exist on our database.");
         return null;
     }
 
@@ -224,12 +271,12 @@ public class Storage {
     }
 
     public void addCustomer() {
-        String name = input.getInput("Enter the Customers Name: ");
-        while (name.isBlank() && name.isEmpty()){
-            System.out.println();
-            name = input.getInput("Invalid input, name can not be empty or composed of spaces" + input.EOL + "Name: ");
+        try {
+            String name = input.getInput("Enter the Customers Name: ");
+            customerList.add(new Customer("", name));
+        } catch (InvalidInputException e){
+            e.getMessage();
         }
-        customerList.add(new Customer(name));
     }
 
     public void removeCustomer() {
@@ -333,9 +380,9 @@ public class Storage {
                 String address = input.getInput("Address: ");
                 double monthlySalary = input.getDouble("Monthly gross salary: ");
                 double grossSalary = monthlySalary * employee.MONTHS;
-                employees.add(new Employee(name, birthYear, address, grossSalary));
+                employees.add(new Employee("", name, birthYear, address, grossSalary));
                 isRunning = true;
-            } catch (InputMismatchException e) {
+            } catch (InvalidInputException e) {
                 System.out.println("That's not the correct input, be careful and please try again.");
                 input.input.nextLine();
 
@@ -356,7 +403,18 @@ public class Storage {
     }
 
     public void addAlbum() {
-        this.albums.add(album.addAlbum());
+        String userInput = null;
+        do {
+            try {
+                String addTitle = input.getInput("We like our games to have names!" + input.EOL + "Title:  ");
+                String addArtist = input.getInput("Artist: ");
+                int addYear = input.getInt("Year: ");
+                double addDailyRent = input.getDouble("Daily Rent amount: ");
+                this.albums.add(new Album(addTitle, addArtist, addYear, addDailyRent));
+            } catch (Exception exception){
+                userInput = input.getInput("Invalid Input. Would you like to try again? Y/N");
+            }
+        } while (userInput.equalsIgnoreCase("y"));
     }
 
     public void removeAlbum() {
@@ -367,19 +425,22 @@ public class Storage {
 
 
     public void rentAlbum() {
-        String maxRentals = "Sorry you need to return an item to able rent a new one, you've reached your memberships maximum rentals. Let the other customers enjoy stuff also!";
+        String maxRentals = "You have reached your current limit on rentals. It's great that you enjoy our products so much!";
         String user = input.getInput("Please enter your name: ");
-        for (Customer customer : customerList) {
-            if (user.equalsIgnoreCase(getCustomer().getName())) {
+        Customer customer = retrieveCustomer(user);
+        if (user != null) {
                 if (customer.canRent()) {
-                    rental.rentGame(getGames());
-                    customer.incrementRentals();
+                    viewAlbums();
+                    String rentId = input.getInput("Hi " + customer.getName() + ". Which album would you like to rent?" + input.EOL + "ID: ");
+                    Inventory albumToRent = retrieveItem(rentId);
+                    if (albumToRent != null){
+                        rental.rentItem(albumToRent);
+                        customer.incrementRentals();
+                    }
                 } else {
                     System.out.println(maxRentals);
                 }
             }
-        }
-        rental.rentAlbum(getAlbums());
     }
 
     public void returnAlbum() {
@@ -400,21 +461,28 @@ public class Storage {
     }
 
     public void viewAlbums() {
-        albums.sort(Comparator.comparingInt(Album::getYear)); //change to lambda
-        Collections.reverse(albums);
+        inventory.sort(Comparator.comparingInt(Inventory::getYear)); //change to lambda
+        Collections.reverse(inventory);
         albums.forEach(System.out::println);
-    }
-
-    public void searchAlbums() {
-        int google = input.getInt("Album Search" + input.EOL + "Year: ");
-        boolean yearExists = false;
-        for (Album album : albums) {
-            if (album.getYear() == google) {
-                yearExists = true;
+        for (Inventory album : inventory){
+            if (album instanceof Album){
                 System.out.println(album.toString());
             }
         }
-        if (yearExists = false){
+    }
+
+    public void searchAlbums() {
+        int year = input.getInt("Album Search" + input.EOL + "Release Year: ");
+        boolean yearExists = false;
+        for (Inventory album : inventory) {
+            if (album instanceof Album){
+                if (album.getYear() == year) {
+                    yearExists = true;
+                    System.out.println(album.toString());
+                }
+            }
+        }
+        if (yearExists == false){
             System.out.println("There is no album available for this year.");
         }
     }
@@ -422,34 +490,41 @@ public class Storage {
     public void viewAlbumsByRating() {
         // sorts albums by comparing the rating value
         // the :: (invokes the method getRating from the album class. compares albums ratings as a double)
-        albums.sort(Comparator.comparingDouble(Album::getRating)); //Change to lambda?
-        Collections.reverse(albums);
-        albums.forEach(System.out::println); // using the :: operator to invoke the println function for each album
+        inventory.sort(Comparator.comparingDouble(Inventory::getRating));
+        Collections.reverse(inventory);
+        for (Inventory album : inventory){
+            if (album instanceof Album){
+                System.out.println(album.toString());
+            }
+        }
     }
 
     public void addGame() {
-        int countArray = games.size();
-        String newGameTitle = input.getInput("Title:  ");
-        String newGameGenre = input.getInput("Genre:  ");
-        int newGameYear = input.getInt("Year:  ");
-        double newGameRentCost = input.getDouble("Daily Rent Fee:  ");
-        input.input.nextLine();
-
-        games.add(new Game(newGameTitle, newGameGenre, newGameRentCost, newGameYear ));
-        System.out.println("Game Added Successfully : " + games.get(games.size()-1).toString());
+        String userInput = "";
+        do {
+            try {
+                String newGameTitle = input.getInput("Title:  ");
+                String newGameGenre = input.getInput("Genre:  ");
+                int newGameYear = input.getInt("Year:  ");
+                double newGameRentCost = input.getDouble("Daily Rent Fee:  ");
+                inventory.add(new Game(newGameTitle, newGameGenre, newGameRentCost, newGameYear ));
+                System.out.println("Game Added Successfully " +input.EOL + inventory.get(inventory.size()-1).toString());
+            } catch (Exception exception){
+                exception.getMessage();
+                userInput = input.getInput("There was a problem with the input, would you like to try again? Y/N");
+            }
+        } while (userInput.equalsIgnoreCase("y"));
     }
 
     public void removeGame() {
         viewGames();
-        System.out.print("Which game should be removed? Enter the Game ID: ");
-        String gameId = input.input.nextLine();
-        boolean contains = false;
-        if (games.contains(gameId)) {
-            contains = true;
-            System.out.println("Are you sure you want to remove this game from the directory?" + input.EOL + games.toString() + input.EOL + "(Y/N)");
+        String gameId = input.getInput("Which game should be removed? Enter the Game ID: ");
+        Inventory gameToRemove = retrieveItem(gameId);
+        if (gameToRemove != null) {
+            System.out.println("Are you sure you want to remove this game from the directory?" + input.EOL + gameToRemove.toString() + input.EOL + "(Y/N)");
             String doubleCheck = input.input.nextLine();
             if (doubleCheck.equalsIgnoreCase("y")) {
-                games.remove(gameId);
+                inventory.remove(gameId);
                 System.out.println("Game fed to a bunch of alpaca's theres no retrieving it anymore...");
             } else {
                 System.out.println("Okay, no problem. ");
@@ -461,24 +536,34 @@ public class Storage {
     }
 
     public void viewGames() {
-        games.sort(Comparator.comparingInt(Game::getYear));
-        Collections.reverse(games);
-        games.forEach(System.out::println);
-    }
-
-    public void searchGames() {
-        String google = input.getInput("Game Search" + input.EOL + "Genre: ");
-        for (Game game : games) {
-            if (game.getGenre().equalsIgnoreCase(google)) {
+        inventory.sort(Comparator.comparingInt(Inventory::getYear));
+        Collections.reverse(inventory);
+        for (Inventory game : inventory) {
+            if (game instanceof Game){
                 System.out.println(game.toString());
             }
         }
     }
 
+    public void searchGames() {
+        String google = input.getInput("Game Search" + input.EOL + "Genre: ");
+        for (Inventory game : inventory) {
+            if (game instanceof Game){
+                if (((Game) game).getGenre().equalsIgnoreCase(google)) {
+                    System.out.println(game.toString());
+                }
+            }
+        }
+    }
+
     public void viewGamesByRating() {
-        games.sort(Comparator.comparingDouble(Game::getRating));
-        Collections.reverse(games);
-        games.forEach(System.out::println);
+        inventory.sort(Comparator.comparingDouble(Inventory::getRating));
+        Collections.reverse(inventory);
+        for (Inventory game : inventory) {
+            if (game instanceof Game){
+                System.out.println(game.toString());
+            }
+        }
     }
 
     public void sendMessage() {
@@ -521,5 +606,9 @@ public class Storage {
         }
         System.out.println("The message has been deleted.");
         viewMessages();
+    }
+
+    public void team() {
+        System.out.println("-- Team {Code}pendant --" + input.EOL+"Silent Saboteur - Axel"+input.EOL+"Hacker SEM 2020 - Navya"+input.EOL+"The Dead One - Drake"+input.EOL+"The British One - Vernita");
     }
 }

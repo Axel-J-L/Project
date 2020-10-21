@@ -23,8 +23,8 @@ public class Customer extends Person {
     public Customer() {
     }
 
-    public Customer(String name) {
-        super(name);
+    public Customer(String id, String name) throws InvalidInputException {
+        super(id, name);
         this.membership = new Regular();
         this.credits = 0;
         this.currentRentals = 0;
@@ -38,20 +38,20 @@ public class Customer extends Person {
 //        this.membership = new Regular();
 //    }
 
-    public Customer(String name, double spentMoney) {
-        super(name);
+    public Customer(String id, String name, double spentMoney) throws InvalidInputException {
+        super(id, name);
         this.spentMoney = spentMoney;
         this.membership = new Regular();
     }
-
-    public Customer(String name, Membership membership){
-        super(name);
-        this.inbox = new ArrayList<>(Arrays.asList(
-                new Message("Welcome!", "Welcome to your inbox to send a message or view your messages simply use the menu!" + input.EOL, "Management", "DART")));
-        this.membership = membership;
-        this.credits = 0;
-        this.currentRentals = 0;
-    }
+//
+//    public Customer(String id, String name, Membership membership){
+//        super(id, name);
+//        this.inbox = new ArrayList<>(Arrays.asList(
+//                new Message("Welcome!", "Welcome to your inbox to send a message or view your messages simply use the menu!" + input.EOL, "Management", "DART")));
+//        this.membership = membership;
+//        this.credits = 0;
+//        this.currentRentals = 0;
+//    }
 
     public void setMembership(Membership type) {
         this.membership = type;

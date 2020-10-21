@@ -118,4 +118,12 @@ public class Menus {
             System.out.println(options[i]);
         }
     }
+    public void secret(){
+    String[] options = {input.ANSI_WHITE + " 1) {code}pendant ", " 2) Main Menu"+input.ANSI_RESET};
+    String title = input.EOL + input.ANSI_WHITE + "---- Secret Menu ----"+input.ANSI_RESET;
+        System.out.println(title);
+        for (int i = 0; i < options.length; i++) {
+            System.out.println(options[i]);
+        }
+    }
 }

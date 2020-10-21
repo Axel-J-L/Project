@@ -1,8 +1,8 @@
 package controller;
 
+import exceptions.InvalidInputException;
 import tools.Input;
 import tools.Menus;
-import tools.s.Secret;
 
 public class DartController {
     private final Menus menus;
@@ -10,12 +10,13 @@ public class DartController {
     private final Storage storage;
     private final String invalidInput = System.lineSeparator() + "--- Invalid input ---";
 
-    public DartController() {
+    public DartController() throws InvalidInputException {
         this.menus = new Menus();
         this.storage = new Storage();
     }
 
     public void run() {
+        storage.readFile();
         mainMenu();
     }
 
@@ -367,7 +368,6 @@ public class DartController {
             switch (choice) {
                 case "1":
                     System.out.println(input.EOL + input.ANSI_PURPLE + ">> Rent Game" + input.ANSI_RESET);
-                    storage.viewGames();
                     storage.rentGame();
                     input.userCheck();
                     cusGameOptions();
@@ -416,7 +416,6 @@ public class DartController {
             switch (choice) {
                 case "1":
                     System.out.println(input.EOL + input.ANSI_PURPLE + ">> Rent Album" + input.ANSI_RESET);
-                    storage.viewAlbums();
                     storage.rentAlbum();
                     input.userCheck();
                     cusAlbumOptions();
@@ -524,88 +523,39 @@ public class DartController {
                     break;
             }
         } while (true);
+    }
+
+        public void secretMenu(){
+            menus.secret();
+            System.out.print(input.ANSI_WHITE +"---------------------" + input.ANSI_RESET + input.EOL + "Choose your option: ");
+            do {
+                String choice = Input.input.nextLine();
+                switch (choice) {
+                    case "1":
+                        storage.team();
+                        input.userCheck();
+                        secretMenu();
+                        break;
+                    case "2":
+                        System.out.println("Congrats on finding the Secret Menu");
+                        mainMenu();
+                        break;
+                    default:
+                        System.out.println(input.ANSI_WHITE +"---------------------"+ input.ANSI_RESET + input.EOL + "--- Invalid input ---");
+                        secretMenu();
+                        System.out.print(input.ANSI_WHITE +"---------------------"+ input.ANSI_RESET + input.EOL + "Choose your option: ");
+                        break;
+                }
+            } while (true);
+        }
+
+    private void s(){
+        String str ="open";
+        boolean n=authenticate(str);
+        if(n){
+            secretMenu();
+        } else{
+            mainMenu();
+        }
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-private void s(){Secret s=new Secret();String str ="open";boolean n=authenticate(str);if(n){s.secret();} else{mainMenu();}}}

@@ -1,7 +1,7 @@
 package items;
 
+import exceptions.InvalidInputException;
 import items.properties.Rating;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -17,33 +17,41 @@ public class Inventory {
     private ArrayList<Rating> ratings;
 
 
-    public Inventory(String title, double dailyRent, int year, boolean rentStatus, LocalDate date) {
+    public Inventory(String title, double dailyRent, int year, boolean rentStatus, LocalDate date) throws InvalidInputException {
         this.id = UUID.randomUUID().toString();
-        this.title = title;
+        if (title.isBlank() || title.isEmpty()) {
+            throw new InvalidInputException("Title cannot be empty.");
+        } else {
+            this.title = title;
+        }
         this.dailyRent = dailyRent;
-        this.year = year;
+        if (year < 1940 || year > LocalDate.now().getYear()) {
+            throw new InvalidInputException("The year is invalid.");
+        } else this.year = year;
         this.rentStatus = rentStatus;
         this.rentedDate = date;
         this.rentalFrequency = 0;
-        this.ratings = new ArrayList<Rating>();
+        this.ratings = new ArrayList<>();
     }
 
-    public Inventory(String title, double dailyRent, int year) {
+    public Inventory(String title, double dailyRent, int year) throws InvalidInputException{
         this.id = UUID.randomUUID().toString();
-        this.title = title;
+        if (title.isBlank() || title.isEmpty()) {
+            throw new InvalidInputException("Title cannot be empty.");
+        } else {
+            this.title = title;
+        }
+        this.dailyRent = dailyRent;
+        if (year < 1940 || year > LocalDate.now().getYear()) {
+            throw new InvalidInputException("The year is invalid.");
+        } else this.year = year;
         this.dailyRent = dailyRent;
         this.rentStatus = false;
-        this.year = year;
         this.rentedDate = null;
         this.rentalFrequency = 0;
-        this.ratings = new ArrayList<Rating>();
+        this.ratings = new ArrayList<>();
     }
-    public Inventory(String title, double dailyRent, int year, LocalDate date) {
-        this.title=title;
-        this.dailyRent=dailyRent;
-        this.year=year;
-        this.rentedDate=date;
-    }
+
     public Inventory(){
     }
 
@@ -51,8 +59,6 @@ public class Inventory {
         this.title = title;
         this.rentalFrequency = rentalTimes;
     }
-
-
 
     public String getId() {
         return id;
@@ -102,7 +108,7 @@ public class Inventory {
         return rentalFrequency;
     }
 
-    public double averageRating() {
+    public double getRating() {
         if (ratings.size() != 0) {
             double sum = 0;
             for (Rating rating : ratings) {
@@ -112,5 +118,4 @@ public class Inventory {
         }
         return 0;
     }
-
 }

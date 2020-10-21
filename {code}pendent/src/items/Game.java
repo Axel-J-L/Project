@@ -1,5 +1,6 @@
 package items;
 
+import exceptions.InvalidInputException;
 import tools.Input;
 
 import java.time.LocalDate;
@@ -9,12 +10,12 @@ public class Game extends Inventory {
     private String genre;
     private Input input = Input.getInstance();
 
-    public Game(String title, String genre, double dailyRent, int year ) {
-        super(title, dailyRent, year );
+    public Game (String title, String genre, double dailyRent, int year ) throws InvalidInputException {
+        super(title, dailyRent, year);
         this.genre = genre;
     }
 
-    public Game(String title, String gameGenre, double dailyRent, int year, boolean rentStatus, LocalDate date) {
+    public Game(String title, String gameGenre, double dailyRent, int year, boolean rentStatus, LocalDate date) throws InvalidInputException{
         super(title, dailyRent, year, rentStatus, date);
         this.genre = gameGenre;
     }
@@ -63,11 +64,7 @@ public class Game extends Inventory {
     }
 
     public double getRating() {
-        return super.averageRating();
-    }
-
-    public int getRentFrequency() {
-        return super.getRentalFrequency();
+        return super.getRating();
     }
 
     @Override
@@ -79,6 +76,6 @@ public class Game extends Inventory {
         return input.DIVIDER + input.EOL + "ID: " + this.getId() + input.EOL + "Game: " + this.getTitle() +
                input.EOL + "Genre: " + this.getGenre() + input.EOL + "Released year: " +
                super.getYear() + input.EOL + "Daily Price: " + this.getDailyRent() + "kr" +
-               input.EOL + "Status: " + outOnRent  + input.EOL + "Rating: " + this.averageRating() + input.EOL;
+               input.EOL + "Status: " + outOnRent  + input.EOL + "Rating: " + this.getRating() + input.EOL;
     }
 }
