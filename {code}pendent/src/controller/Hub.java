@@ -11,12 +11,10 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
 
-public class Storage {
+public class Hub {
 
     private final Customer customer = new Customer();
-    private final RentalTransaction rental = new RentalTransaction();
     private final RentalTransaction transaction = new RentalTransaction();
-    private final ArrayList<Album> albums = new ArrayList<>();
     private final ArrayList<Employee> employees = new ArrayList<>();
     private final ArrayList<Customer> customerList = new ArrayList<>();
     private final List<Inventory> inventory = new ArrayList<>();
@@ -24,7 +22,7 @@ public class Storage {
     private final ArrayList<RentalTransaction> rentalHistory = new ArrayList<>();
     private final Input input = Input.getInstance();
 
-    public Storage() {
+    public Hub() {
     }
 
     public void readFile(){
@@ -167,7 +165,7 @@ public class Storage {
     }
 
     protected void totalProfit() {
-        double profit = rental.getRentalIncome();
+        double profit = transaction.getRentalIncome();
         System.out.println("The total profit is " + profit + " kr" + Input.EOL);
     }
 
@@ -343,7 +341,6 @@ public class Storage {
     protected void viewAlbums() {
         inventory.sort(Comparator.comparingInt(Inventory::getYear));
         Collections.reverse(inventory);
-        albums.forEach(System.out::println);
         for (Inventory album : inventory){
             if (album instanceof Album){
                 System.out.println(album.toString());

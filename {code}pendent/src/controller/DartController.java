@@ -6,16 +6,16 @@ import tools.Menus;
 public class DartController {
     private final Menus menus;
     private final Input input = Input.getInstance();
-    private final Storage storage;
+    private final Hub hub;
     private final String invalidInput = System.lineSeparator() + "--- Invalid input ---";
 
     public DartController() {
         this.menus = new Menus();
-        this.storage = new Storage();
+        this.hub = new Hub();
     }
 
     public void run() {
-        storage.readFile();
+        hub.readFile();
         mainMenu();
     }
 
@@ -92,43 +92,43 @@ public class DartController {
             switch (choice) {
                 case "1" -> {
                     System.out.print(Input.EOL + Input.ANSI_PURPLE + ">> New Employee" + Input.ANSI_RESET + Input.EOL);
-                    storage.addEmployee();
+                    hub.addEmployee();
                     input.userCheck();
                     managerMenu();
                 }
                 case "2" -> {
-                    storage.viewEmployee();
-                    storage.removeEmployee();
+                    hub.viewEmployee();
+                    hub.removeEmployee();
                     input.userCheck();
                     managerMenu();
                 }
                 case "3" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> All Employees" + Input.ANSI_RESET);
-                    storage.viewEmployee();
+                    hub.viewEmployee();
                     input.userCheck();
                     managerMenu();
                 }
                 case "4" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Transaction History" + Input.ANSI_RESET);
-                    storage.viewTransactions();
+                    hub.viewTransactions();
                     input.userCheck();
                     managerMenu();
                 }
                 case "5" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Most Profitable Item" + Input.ANSI_RESET);
-                    storage.itemsByProfit();
+                    hub.itemsByProfit();
                     input.userCheck();
                     managerMenu();
                 }
                 case "6" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> View Rent Frequency" + Input.ANSI_RESET);
-                    storage.rentalFrequency();
+                    hub.rentalFrequency();
                     input.userCheck();
                     managerMenu();
                 }
                 case "7" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Most Profitable Customer" + Input.ANSI_RESET);
-                    storage.bestCustomer();
+                    hub.bestCustomer();
                     input.userCheck();
                     managerMenu();
                 }
@@ -153,7 +153,7 @@ public class DartController {
                 case "3" -> empCustomerOptions();
                 case "4" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Total Rent Profit" + Input.ANSI_RESET);
-                    storage.totalProfit();
+                    hub.totalProfit();
                     input.userCheck();
                     employeeMenu();
                 }
@@ -175,20 +175,20 @@ public class DartController {
             switch (choice) {
                 case "1" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> New Game" + Input.ANSI_RESET);
-                    storage.addGame();
+                    hub.addGame();
                     input.userCheck();
                     empGameOptions();
                 }
                 case "2" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Remove Game" + Input.ANSI_RESET);
-                    storage.viewGames();
-                    storage.removeGame();
+                    hub.viewGames();
+                    hub.removeGame();
                     input.userCheck();
                     empGameOptions();
                 }
                 case "3" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> All Games" + Input.ANSI_RESET);
-                    storage.viewGames();
+                    hub.viewGames();
                     input.userCheck();
                     empGameOptions();
                 }
@@ -210,20 +210,20 @@ public class DartController {
             switch (choice) {
                 case "1" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> New Album" + Input.ANSI_RESET);
-                    storage.addAlbum();
+                    hub.addAlbum();
                     input.userCheck();
                     empAlbumOptions();
                 }
                 case "2" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Remove Album" + Input.ANSI_RESET);
-                    storage.viewAlbums();
-                    storage.removeAlbum();
+                    hub.viewAlbums();
+                    hub.removeAlbum();
                     input.userCheck();
                     empAlbumOptions();
                 }
                 case "3" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> All Albums" + Input.ANSI_RESET);
-                    storage.viewAlbums();
+                    hub.viewAlbums();
                     input.userCheck();
                     empAlbumOptions();
                 }
@@ -245,25 +245,25 @@ public class DartController {
             switch (choice) {
                 case "1" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Membership Requests" + Input.ANSI_RESET);
-                    storage.membershipRequestList();
+                    hub.membershipRequestList();
                     input.userCheck();
                     empCustomerOptions();
                 }
                 case "2" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> New Customer" + Input.ANSI_RESET);
-                    storage.addCustomer();
+                    hub.addCustomer();
                     input.userCheck();
                     empCustomerOptions();
                 }
                 case "3" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Remove Customer" + Input.ANSI_RESET);
-                    storage.removeCustomer();
+                    hub.removeCustomer();
                     input.userCheck();
                     empCustomerOptions();
                 }
                 case "4" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> All Customers" + Input.ANSI_RESET);
-                    storage.viewCustomer();
+                    hub.viewCustomer();
                     input.userCheck();
                     empCustomerOptions();
                 }
@@ -306,31 +306,31 @@ public class DartController {
             switch (choice) {
                 case "1" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Rent Game" + Input.ANSI_RESET);
-                    storage.rentGame();
+                    hub.rentGame();
                     input.userCheck();
                     cusGameOptions();
                 }
                 case "2" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Return Game" + Input.ANSI_RESET);
-                    storage.returnGame();
+                    hub.returnGame();
                     input.userCheck();
                     cusGameOptions();
                 }
                 case "3" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Search Games by Genre" + Input.ANSI_RESET);
-                    storage.searchGames();
+                    hub.searchGames();
                     input.userCheck();
                     cusGameOptions();
                 }
                 case "4" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> All Games by Year" + Input.ANSI_RESET);
-                    storage.viewGames();
+                    hub.viewGames();
                     input.userCheck();
                     cusGameOptions();
                 }
                 case "5" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> All Games by Rating" + Input.ANSI_RESET);
-                    storage.viewGamesByRating();
+                    hub.viewGamesByRating();
                     input.userCheck();
                     cusGameOptions();
                 }
@@ -352,33 +352,33 @@ public class DartController {
             switch (choice) {
                 case "1" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Rent Album" + Input.ANSI_RESET);
-                    storage.rentAlbum();
+                    hub.rentAlbum();
                     input.userCheck();
                     cusAlbumOptions();
                 }
                 case "2" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Return Album:" + Input.ANSI_RESET);
-                    storage.viewAlbums();
-                    storage.returnAlbum();
+                    hub.viewAlbums();
+                    hub.returnAlbum();
                     input.userCheck();
                     cusAlbumOptions();
                 }
                 case "3" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Search Albums by Year" + Input.ANSI_RESET);
-                    storage.searchAlbums();
+                    hub.searchAlbums();
                     input.userCheck();
                     cusAlbumOptions();
                 }
                 case "4" -> {
                     System.out.println(Input.EOL +
                             Input.ANSI_PURPLE + ">> All Albums by Year" + Input.ANSI_RESET);
-                    storage.viewAlbums();
+                    hub.viewAlbums();
                     input.userCheck();
                     cusAlbumOptions();
                 }
                 case "5" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> All Albums by Rating" + Input.ANSI_RESET);
-                    storage.viewAlbumsByRating();
+                    hub.viewAlbumsByRating();
                     input.userCheck();
                     cusAlbumOptions();
                 }
@@ -400,13 +400,13 @@ public class DartController {
             switch (choice) {
                 case "1" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Add Membership" + Input.ANSI_RESET);
-                    storage.requestMembership();
+                    hub.requestMembership();
                     input.userCheck();
                     cusMembershipOptions();
                 }
                 case "2" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Upgrade Membership" + Input.ANSI_RESET);
-                    storage.upgradeMembership();
+                    hub.upgradeMembership();
                     input.userCheck();
                     cusMembershipOptions();
                 }
@@ -428,19 +428,19 @@ public class DartController {
             switch (choice) {
                 case "1" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> View Messages" + Input.ANSI_RESET);
-                    storage.viewMessages();
+                    hub.viewMessages();
                     input.userCheck();
                     inboxMenu();
                 }
                 case "2" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Send Message" + Input.ANSI_RESET);
-                    storage.sendMessage();
+                    hub.sendMessage();
                     input.userCheck();
                     inboxMenu();
                 }
                 case "3" -> {
                     System.out.println(Input.EOL + Input.ANSI_PURPLE + ">> Delete Message" + Input.ANSI_RESET);
-                    storage.removeMessages();
+                    hub.removeMessages();
                     input.userCheck();
                     inboxMenu();
                 }
@@ -461,7 +461,7 @@ public class DartController {
             String choice = Input.input.nextLine();
             switch (choice) {
                 case "1" -> {
-                    storage.team();
+                    hub.team();
                     input.userCheck();
                     secretMenu();
                 }
