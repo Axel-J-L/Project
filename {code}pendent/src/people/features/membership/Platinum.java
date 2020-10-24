@@ -1,9 +1,6 @@
 package people.features.membership;
 
-import people.features.membership.Membership;
-
 public class Platinum implements Membership {
-    private final String TYPE = "Platinum";
     private final double MEMBER_DISCOUNT = .25;
     private final int MAX_RENTALS = 7;
     private final int CREDIT = 3;

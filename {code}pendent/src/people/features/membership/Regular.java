@@ -1,8 +1,6 @@
 package people.features.membership;
 
 public class Regular implements Membership {
-    private final String TYPE = "Platinum";
-    private final double MEMBER_DISCOUNT = 0;
     private final int MAX_RENTALS = 1;
     private final int CREDIT = 0;
 

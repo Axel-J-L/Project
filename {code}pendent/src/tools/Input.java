@@ -1,6 +1,5 @@
 package tools;
 
-import java.io.*;
 import java.time.Year;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -13,10 +12,7 @@ public class Input {
 
     // already knew how to use the color swaps but we copied the constants from https://stackoverflow.com/questions/5762491/how-to-print-color-in-console-using-system-out-println
     public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_BLACK = "\u001B[30m";
     public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
     public static final String ANSI_BLUE = "\u001B[34m";
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_CYAN = "\u001B[36m";
@@ -93,15 +89,15 @@ public class Input {
     }
 
     public void slowPrint(String message) {
-        // Get message, convert to char array
+        // Get message, convert to char array.
         char[] chars = message.toCharArray();
 
-        // Print a char from the array, then sleep for millis
+        // Print a char from the array, then sleep for milliseconds.
         for (int i = 0; i < chars.length; i++) {
                try {
-                   TimeUnit.MILLISECONDS.sleep(30);
+                   TimeUnit.MILLISECONDS.sleep(10);
                    System.out.print(chars[i]);
-                   TimeUnit.MILLISECONDS.sleep(30);
+                   TimeUnit.MILLISECONDS.sleep(10);
                } catch (InterruptedException e) {
                    // shouldn't happen but if it does you'll know it happened.
                    e.printStackTrace(); //shows you a similar error to compiler errors
@@ -110,7 +106,7 @@ public class Input {
     }
 
     public void userCheck() {
-        String check = ">> Press \u001B[31m'Enter'\u001B[0m to continue: " + EOL; // Get rid of this. This won't even help us with the VG...
+        String check = ">> Press \u001B[31m'Enter'\u001B[0m to continue: " + EOL;
         System.out.print(check);
         input.nextLine();
 

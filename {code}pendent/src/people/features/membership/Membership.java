@@ -1,6 +1,5 @@
 package people.features.membership;
 
-// Dark Arts :D
 public interface Membership {
     String membershipType();
     double discount(double userBill);

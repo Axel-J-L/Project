@@ -1,7 +1,5 @@
 package people.features.membership;
 
-import people.features.membership.Membership;
-
 public class Silver implements Membership {
     private final double MEMBER_DISCOUNT = .10;
     private final int MAX_RENTALS = 3;

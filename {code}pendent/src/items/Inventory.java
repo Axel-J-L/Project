@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class Inventory {
+public abstract class Inventory {
     private String id;
     private String title;
     private int year;
@@ -25,7 +25,7 @@ public class Inventory {
             this.title = title;
         }
         this.dailyRent = dailyRent;
-        if (year < 1940 || year > LocalDate.now().getYear()) {
+        if ( year < 1940 || year > LocalDate.now().getYear()) {
             throw new InvalidInputException("The year is invalid.");
         } else this.year = year;
         this.rentStatus = rentStatus;
@@ -52,12 +52,8 @@ public class Inventory {
         this.ratings = new ArrayList<>();
     }
 
-    public Inventory(){
-    }
 
-    public Inventory(String title, int rentalTimes) {
-        this.title = title;
-        this.rentalFrequency = rentalTimes;
+    public Inventory(){
     }
 
     public String getId() {
@@ -100,7 +96,7 @@ public class Inventory {
         this.rentStatus = rentStatus;
     }
 
-    public ArrayList getRatingSet() {
+    public ArrayList<Rating> getRatingSet() {
         return ratings;
     }
 

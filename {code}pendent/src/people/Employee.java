@@ -2,8 +2,8 @@ package people;
 
 import exceptions.InvalidInputException;
 import tools.Input;
+
 import java.time.LocalDate;
-import java.util.InputMismatchException;
 
 public class Employee extends Person {
 
@@ -18,7 +18,7 @@ public class Employee extends Person {
     private final double BONUS_HIGH = 7500.00;
     private final int FIRST_AGE_FOR_BONUS = 22;
     private final int SECOND_AGE_FOR_BONUS = 30;
-    private final double TAX_DEDUCTION = .7; // removes 30% when you times something by this.
+    private final double TAX_DEDUCTION = .7;
     private Input input = Input.getInstance();
 
     public Employee() {

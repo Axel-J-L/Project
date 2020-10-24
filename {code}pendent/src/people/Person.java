@@ -3,7 +3,7 @@ package people;
 import exceptions.InvalidInputException;
 import java.util.UUID;
 
-public class Person {
+public abstract class Person {
 
     private String id;
     private String name;

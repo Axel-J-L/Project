@@ -1,12 +1,8 @@
 package items.properties;
 
 public class Rating {
-
     private double rating;
     private String feedback;
-
-    public Rating() {
-    }
 
     public Rating(double rating) {
         this.rating = rating;

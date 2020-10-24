@@ -55,7 +55,7 @@ public class Album extends Inventory {
     }
 
     public String getRentStatus() {
-        if (super.isRentStatus() == true) {
+        if (super.isRentStatus()) {
             return "\033[31mRented\033[0m";
         }
         return "Available";
@@ -65,11 +65,12 @@ public class Album extends Inventory {
         super.setRentStatus(rentStatus);
     }
 
+    @Override
     public String toString() {
-        return input.DIVIDER + input.EOL + "ID: " + this.getID() + input.EOL + "Album: " + this.getTitle()
-                + input.EOL + "Artist: " + this.getArtist() + ". " + input.EOL + "Released year: " +
-                this.getYear() + ". " + input.EOL + "Daily Price: " + this.getDailyRent() + " SEK."
-                + input.EOL + "Status: " + this.getRentStatus() + input.EOL + "Rating: " + this.getRating();
+        return Input.DIVIDER + input.EOL + "ID: " + this.getID() + input.EOL + "Album: " + this.getTitle()
+                + Input.EOL + "Artist: " + this.getArtist() + ". " + input.EOL + "Released year: " +
+                this.getYear() + ". " + Input.EOL + "Daily Price: " + this.getDailyRent() + " SEK."
+                + input.EOL + "Status: " + this.getRentStatus() + Input.EOL + "Rating: " + this.getRating();
     }
 
 }

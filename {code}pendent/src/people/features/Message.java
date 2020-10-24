@@ -25,9 +25,6 @@ public class Message {
         this.readStatus = false;
     }
 
-    public Message() {
-    }
-
 
     public void setReadStatus(boolean status) {
         this.readStatus = status;
