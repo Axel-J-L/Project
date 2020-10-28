@@ -19,10 +19,6 @@ public class Game extends Inventory {
         this.genre = gameGenre;
     }
 
-    public Game() {
-        super();
-    }
-
     public String getId() {
         return super.getId();
     }

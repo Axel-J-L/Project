@@ -109,7 +109,7 @@ public class Input {
         String check = ">> Press \u001B[31m'Enter'\u001B[0m to continue: " + EOL;
         System.out.print(check);
         input.nextLine();
-
+        input.reset();
     }
 }
 

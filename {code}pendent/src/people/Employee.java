@@ -29,7 +29,7 @@ public class Employee extends Person {
         if (birthYear < 1920 || birthYear > LocalDate.now().getYear()){
             throw new InvalidInputException("Birth year must be between 1920 - "+ LocalDate.now().getYear());
         }
-        if (salary < 0 || salary > 100000){
+        if (salary < 0 || salary > 1000000){
             throw new InvalidInputException("Salary cannot be a negative number or greater then 100,000kr");
         }
         this.birthYear = birthYear;

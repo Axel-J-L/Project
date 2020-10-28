@@ -92,7 +92,7 @@ public class Customer extends Person {
     }
 
 
-    public void viewMessages(Customer customer) {
+    public void checkMessages(Customer customer) {
         for (Message message : customer.getInbox()) {
             if (!message.getReadStatus()) {
                 message.setReadStatus(true);
